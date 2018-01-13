@@ -1,0 +1,1 @@
+﻿namespace Lykke.Service.PaySign.Core.Services{    public interface ISignService    {        string Sign(string body, string keyName);    }}
