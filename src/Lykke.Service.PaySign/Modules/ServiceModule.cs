@@ -1,6 +1,9 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AzureStorage.Tables;
 using Common.Log;
+using Lykke.Service.PaySign.AzureRepositories;
+using Lykke.Service.PaySign.Core.Repositories;
 using Lykke.Service.PaySign.Core.Services;
 using Lykke.Service.PaySign.Core.Settings.ServiceSettings;
 using Lykke.Service.PaySign.Services;
@@ -26,12 +29,6 @@ namespace Lykke.Service.PaySign.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
-            // TODO: Do not register entire settings in container, pass necessary settings to services which requires them
-            // ex:
-            //  builder.RegisterType<QuotesPublisher>()
-            //      .As<IQuotesPublisher>()
-            //      .WithParameter(TypedParameter.From(_settings.CurrentValue.QuotesPublication))
-
             builder.RegisterInstance(_log)
                 .As<ILog>()
                 .SingleInstance();
@@ -53,6 +50,14 @@ namespace Lykke.Service.PaySign.Modules
             builder.RegisterType<SignService>()
                 .As<ISignService>()
                 .SingleInstance();
+
+            builder.RegisterType<CallbackStubService>()
+                .As<ICallbackStubService>()
+                .SingleInstance();
+
+            builder.RegisterInstance<ICallbackDataRepository>(new CallbackDataRepository(
+                AzureTableStorage<CallbackDataEntity>.Create(_settings.ConnectionString(x => x.Db.DataConnString),
+                    "CallbackData", _log)));
 
             builder.Populate(_services);
         }
