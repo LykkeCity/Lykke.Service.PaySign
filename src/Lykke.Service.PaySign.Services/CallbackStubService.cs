@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
-using Lykke.Service.PayInternal.Contract.PaymentRequest;
 using Lykke.Service.PaySign.Core.Domain;
 using Lykke.Service.PaySign.Core.Repositories;
 using Lykke.Service.PaySign.Core.Services;
@@ -20,13 +19,11 @@ namespace Lykke.Service.PaySign.Services
                 callbackDataRepository ?? throw new ArgumentNullException(nameof(callbackDataRepository));
         }
 
-        public async Task RegisterCall(PaymentRequestDetailsMessage data)
+        public async Task RegisterCall(string data)
         {
             await _callbackDataRepository.InsertAsync(new CallbackData
             {
-                MerchantId = data.MerchantId,
-                PaymentRequestId = data.Id,
-                Info = data.ToJson()
+                Info = data
             });
         }
 

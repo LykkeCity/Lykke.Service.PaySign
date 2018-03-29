@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Common.Log;
-using Lykke.Service.PayInternal.Contract.PaymentRequest;
 using Lykke.Service.PaySign.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Lykke.Service.PaySign.Controllers
@@ -33,9 +31,7 @@ namespace Lykke.Service.PaySign.Controllers
         {
             try
             {
-                var message = JsonConvert.DeserializeObject<PaymentRequestDetailsMessage>(data);
-
-                await _callbackStubService.RegisterCall(message);
+                await _callbackStubService.RegisterCall(data);
 
                 return Ok();
             }
