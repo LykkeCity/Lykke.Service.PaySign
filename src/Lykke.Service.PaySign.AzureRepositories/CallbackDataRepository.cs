@@ -25,7 +25,7 @@ namespace Lykke.Service.PaySign.AzureRepositories
                 await _tableStorage.GetDataAsync(CallbackDataEntity.ByDefault.GeneratePartitionKey());
 
             return records
-                .OrderByDescending(x => x.RowKey)
+                .OrderByDescending(x => x.CreatedOn)
                 .Take(LatestRecordsCount)
                 .ToList();
         }

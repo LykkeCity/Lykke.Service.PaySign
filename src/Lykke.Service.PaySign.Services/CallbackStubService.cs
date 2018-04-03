@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Common;
 using Lykke.Service.PaySign.Core.Domain;
 using Lykke.Service.PaySign.Core.Repositories;
 using Lykke.Service.PaySign.Core.Services;
@@ -23,7 +22,8 @@ namespace Lykke.Service.PaySign.Services
         {
             await _callbackDataRepository.InsertAsync(new CallbackData
             {
-                Info = data
+                Info = data,
+                CreatedOn = DateTime.UtcNow
             });
         }
 

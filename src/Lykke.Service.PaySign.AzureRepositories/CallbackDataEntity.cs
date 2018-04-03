@@ -1,5 +1,4 @@
 ﻿using System;
-using Common;
 using Lykke.AzureStorage.Tables;
 using Lykke.Service.PaySign.Core.Domain;
 
@@ -16,7 +15,7 @@ namespace Lykke.Service.PaySign.AzureRepositories
 
             public static string GenerateRowKey()
             {
-                return DateTime.UtcNow.ToIsoDateTime();
+                return Guid.NewGuid().ToString();
             }
 
             public static CallbackDataEntity Create(ICallbackData src)
@@ -27,6 +26,7 @@ namespace Lykke.Service.PaySign.AzureRepositories
                     RowKey = GenerateRowKey(),
                     MerchantId = src.MerchantId,
                     PaymentRequestId = src.PaymentRequestId,
+                    CreatedOn = src.CreatedOn,
                     Info = src.Info
                 };
             }
@@ -37,5 +37,7 @@ namespace Lykke.Service.PaySign.AzureRepositories
         public string PaymentRequestId { get; set; }
 
         public string Info { get; set; }
+
+        public DateTime CreatedOn { get; set; }
     }
 }
