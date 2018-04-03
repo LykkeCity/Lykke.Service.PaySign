@@ -43,7 +43,7 @@ namespace Lykke.Service.PaySign.Controllers
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
 
-        [HttpGet("/latest")]
+        [HttpGet("latest")]
         [SwaggerOperation("GetLatestCalls")]
         [ProducesResponseType(typeof(IEnumerable<string>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int) HttpStatusCode.InternalServerError)]
