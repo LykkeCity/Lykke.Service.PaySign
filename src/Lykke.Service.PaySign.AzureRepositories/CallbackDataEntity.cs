@@ -27,7 +27,8 @@ namespace Lykke.Service.PaySign.AzureRepositories
                     MerchantId = src.MerchantId,
                     PaymentRequestId = src.PaymentRequestId,
                     CreatedOn = src.CreatedOn,
-                    Info = src.Info
+                    Info = src.Info,
+                    Headers = src.Headers
                 };
             }
         }
@@ -39,5 +40,7 @@ namespace Lykke.Service.PaySign.AzureRepositories
         public string Info { get; set; }
 
         public DateTime CreatedOn { get; set; }
+
+        public string Headers { get; set; }
     }
 }
