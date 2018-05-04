@@ -9,5 +9,6 @@ namespace Lykke.Service.PaySign.Core.Domain
         [CanBeNull] string PaymentRequestId { get; set; }
         DateTime CreatedOn { get; set; }
         string Info { get; set; }
+        [CanBeNull] string Headers { get; set; }
     }
 }

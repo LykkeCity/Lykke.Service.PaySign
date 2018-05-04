@@ -8,5 +8,6 @@ namespace Lykke.Service.PaySign.Core.Domain
         public string PaymentRequestId { get; set; }
         public string Info { get; set; }
         public DateTime CreatedOn { get; set; }
+        public string Headers { get; set; }
     }
 }
