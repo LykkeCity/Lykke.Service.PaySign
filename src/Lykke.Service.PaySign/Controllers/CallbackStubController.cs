@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using Common.Log;
+using Lykke.Common.Api.Contract.Responses;
 using Lykke.Service.PaySign.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -26,9 +27,13 @@ namespace Lykke.Service.PaySign.Controllers
         [HttpPost]
         [SwaggerOperation("RegisterCall")]
         [ProducesResponseType(typeof(void), (int) HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(void), (int) HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> RegisterCall([FromBody] string data)
         {
+            if (string.IsNullOrWhiteSpace(data))
+                return BadRequest(ErrorResponse.Create("Data is empty"));
+
             try
             {
                 await _callbackStubService.RegisterCall(data);
