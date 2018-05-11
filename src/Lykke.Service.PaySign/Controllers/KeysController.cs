@@ -7,6 +7,7 @@ using Common;
 using Common.Log;
 using Lykke.Common.Api.Contract.Responses;
 using Lykke.Service.PaySign.Core.Domain.KeyInfo;
+using Lykke.Service.PaySign.Core.Exceptions;
 using Lykke.Service.PaySign.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +81,13 @@ namespace Lykke.Service.PaySign.Controllers
                 });
 
                 return NoContent();
+            }
+            catch (KeyAlreadyExistsException keyEx)
+            {
+                await _log.WriteErrorAsync(nameof(KeysController), nameof(UploadKey), new {keyEx.KeyName}.ToJson(),
+                    keyEx);
+
+                return BadRequest(ErrorResponse.Create(keyEx.Message));
             }
             catch (Exception e)
             {
