@@ -1,26 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using Lykke.Service.PaySign.Core.Domain.KeyInfo;
-using Lykke.Service.PaySign.Core.Exceptions;
 using Lykke.Service.PaySign.Core.Services;
 
 namespace Lykke.Service.PaySign.Services
 {
     public class KeyStoreService : IKeysStoreService
     {
-        private readonly Dictionary<string, KeyInfo> _keyInfos;
+        private readonly ConcurrentDictionary<string, KeyInfo> _keyInfos;
 
         public KeyStoreService()
         {
-            _keyInfos = new Dictionary<string, KeyInfo>();
+            _keyInfos = new ConcurrentDictionary<string, KeyInfo>();
         }
 
-        public void Add(string name, KeyInfo keyInfo)
+        public bool Add(string name, KeyInfo keyInfo)
         {
-            lock (_keyInfos)
-            {
-                if (!_keyInfos.TryAdd(name, keyInfo))
-                    throw new KeyAlreadyExistsException(name);
-            }
+            return _keyInfos.TryAdd(name, keyInfo);
         }
 
         public KeyInfo Get(string name)

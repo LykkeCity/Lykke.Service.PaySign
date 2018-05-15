@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Threading.Tasks;
 using Common;
 using Common.Log;
 using Lykke.Common.Api.Contract.Responses;
@@ -36,8 +35,11 @@ namespace Lykke.Service.PaySign.Controllers
         [ProducesResponseType(typeof(string), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(void), (int) HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Sign(string keyName, [FromBody] string content)
+        public IActionResult Sign(string keyName, [FromBody] string content)
         {
+            if (string.IsNullOrWhiteSpace(content))
+                return BadRequest(ErrorResponse.Create("Content to sign can't be empty"));
+
             try
             {
                 var result = _signService.Sign(content, keyName);
@@ -46,13 +48,13 @@ namespace Lykke.Service.PaySign.Controllers
             }
             catch (KeyNotFoundException keyEx)
             {
-                await _log.WriteErrorAsync(nameof(SignController), nameof(Sign), new {keyEx.KeyName}.ToJson(), keyEx);
+                _log.WriteError(nameof(Sign), new {keyEx.KeyName}.ToJson(), keyEx);
 
                 return BadRequest(ErrorResponse.Create(keyEx.Message));
             }
             catch (Exception ex)
             {
-                await _log.WriteErrorAsync(nameof(SignController), nameof(Sign), ex);
+                _log.WriteError(nameof(Sign), null, ex);
             }
 
             return StatusCode((int) HttpStatusCode.InternalServerError);
