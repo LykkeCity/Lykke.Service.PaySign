@@ -2,6 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using Lykke.Service.PaySign.Core;
+using Lykke.Service.PaySign.Core.Exceptions;
 using Lykke.Service.PaySign.Core.Services;
 
 namespace Lykke.Service.PaySign.Services
@@ -21,7 +22,7 @@ namespace Lykke.Service.PaySign.Services
             var keyInfo = _keysStoreService.Get(keyName);
 
             if (keyInfo == null)
-                throw new Exception($"There is no key {keyName}");
+                throw new KeyNotFoundException(keyName);
 
             var rsa = keyInfo.PrivateKey.CreateRsa();
 

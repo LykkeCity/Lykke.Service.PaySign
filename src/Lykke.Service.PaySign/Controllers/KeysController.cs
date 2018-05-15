@@ -36,7 +36,7 @@ namespace Lykke.Service.PaySign.Controllers
         [SwaggerOperation("GetKeys")]
         [ProducesResponseType(typeof(IEnumerable<string>), (int) HttpStatusCode.OK)]
         [ProducesResponseType(typeof(void), (int) HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> GetKeys()
+        public IActionResult GetKeys()
         {
             try
             {
@@ -44,7 +44,7 @@ namespace Lykke.Service.PaySign.Controllers
             }
             catch (Exception e)
             {
-                await _log.WriteErrorAsync(nameof(KeysController), nameof(GetKeys), e);
+                _log.WriteError(nameof(GetKeys), null, e);
             }
 
             return StatusCode((int) HttpStatusCode.InternalServerError);
@@ -69,21 +69,27 @@ namespace Lykke.Service.PaySign.Controllers
                 return BadRequest(ErrorResponse.Create("Empty file"));
             }
 
+            if (_keysStoreService.Get(keyName) != null)
+                return BadRequest(ErrorResponse.Create($"{keyName} already exists"));
+
             var fileContent = await file.OpenReadStream().ToBytesAsync();
 
             try
             {
-                _keysStoreService.Add(keyName, new KeyInfo
+                bool added = _keysStoreService.Add(keyName, new KeyInfo
                 {
                     ApiKey = apiKey,
                     PrivateKey = Encoding.UTF8.GetString(fileContent, 0, fileContent.Length)
                 });
 
-                return NoContent();
+                if (added)
+                    return NoContent();
+
+                return BadRequest(ErrorResponse.Create($"Couldn't add {keyName}"));
             }
             catch (Exception e)
             {
-                await _log.WriteErrorAsync(nameof(KeysController), nameof(UploadKey), e);
+                _log.WriteError(nameof(UploadKey), null, e);
             }
 
             return StatusCode((int)HttpStatusCode.InternalServerError);
