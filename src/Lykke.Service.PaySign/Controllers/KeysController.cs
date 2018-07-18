@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Common;
 using Common.Log;
 using Lykke.Common.Api.Contract.Responses;
+using Lykke.Common.Log;
 using Lykke.Service.PaySign.Core.Domain.KeyInfo;
 using Lykke.Service.PaySign.Core.Services;
 using Microsoft.AspNetCore.Http;
@@ -22,10 +23,10 @@ namespace Lykke.Service.PaySign.Controllers
 
         public KeysController(
             IKeysStoreService keysStoreService,
-            ILog log)
+            ILogFactory logFactory)
         {
             _keysStoreService = keysStoreService ?? throw new ArgumentNullException(nameof(keysStoreService));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
+            _log = logFactory?.CreateLog(this) ?? throw new ArgumentNullException(nameof(logFactory));
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Lykke.Service.PaySign.Controllers
             }
             catch (Exception e)
             {
-                _log.WriteError(nameof(GetKeys), null, e);
+                _log.Error(e);
             }
 
             return StatusCode((int) HttpStatusCode.InternalServerError);
@@ -89,7 +90,7 @@ namespace Lykke.Service.PaySign.Controllers
             }
             catch (Exception e)
             {
-                _log.WriteError(nameof(UploadKey), null, e);
+                _log.Error(e);
             }
 
             return StatusCode((int)HttpStatusCode.InternalServerError);

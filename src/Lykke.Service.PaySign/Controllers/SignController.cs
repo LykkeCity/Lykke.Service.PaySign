@@ -3,6 +3,7 @@ using System.Net;
 using Common;
 using Common.Log;
 using Lykke.Common.Api.Contract.Responses;
+using Lykke.Common.Log;
 using Lykke.Service.PaySign.Core.Exceptions;
 using Lykke.Service.PaySign.Core.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +19,10 @@ namespace Lykke.Service.PaySign.Controllers
 
         public SignController(
             ISignService signService,
-            ILog log)
+            ILogFactory logFactory)
         {
             _signService = signService ?? throw new ArgumentNullException(nameof(signService));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
+            _log = logFactory?.CreateLog(this) ?? throw new ArgumentNullException(nameof(logFactory));
         }
 
         /// <summary>
@@ -48,13 +49,13 @@ namespace Lykke.Service.PaySign.Controllers
             }
             catch (KeyNotFoundException keyEx)
             {
-                _log.WriteError(nameof(Sign), new {keyEx.KeyName}.ToJson(), keyEx);
+                _log.Error(keyEx, null, new {keyEx.KeyName}.ToJson());
 
                 return BadRequest(ErrorResponse.Create(keyEx.Message));
             }
             catch (Exception ex)
             {
-                _log.WriteError(nameof(Sign), null, ex);
+                _log.Error(ex);
             }
 
             return StatusCode((int) HttpStatusCode.InternalServerError);

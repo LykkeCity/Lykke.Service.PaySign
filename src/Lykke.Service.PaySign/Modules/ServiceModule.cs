@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AzureStorage.Tables;
-using Common.Log;
+using Lykke.Common.Log;
 using Lykke.Service.PaySign.AzureRepositories;
 using Lykke.Service.PaySign.Core.Repositories;
 using Lykke.Service.PaySign.Core.Services;
@@ -15,24 +15,18 @@ namespace Lykke.Service.PaySign.Modules
     public class ServiceModule : Module
     {
         private readonly IReloadingManager<PaySignSettings> _settings;
-        private readonly ILog _log;
         // NOTE: you can remove it if you don't need to use IServiceCollection extensions to register service specific dependencies
         private readonly IServiceCollection _services;
 
-        public ServiceModule(IReloadingManager<PaySignSettings> settings, ILog log)
+        public ServiceModule(IReloadingManager<PaySignSettings> settings)
         {
             _settings = settings;
-            _log = log;
 
             _services = new ServiceCollection();
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterInstance(_log)
-                .As<ILog>()
-                .SingleInstance();
-
             builder.RegisterType<HealthService>()
                 .As<IHealthService>()
                 .SingleInstance();
@@ -55,9 +49,11 @@ namespace Lykke.Service.PaySign.Modules
                 .As<ICallbackStubService>()
                 .SingleInstance();
 
-            builder.RegisterInstance<ICallbackDataRepository>(new CallbackDataRepository(
-                AzureTableStorage<CallbackDataEntity>.Create(_settings.ConnectionString(x => x.Db.DataConnString),
-                    "CallbackData", _log)));
+            builder.Register(c => new CallbackDataRepository(
+                    AzureTableStorage<CallbackDataEntity>.Create(_settings.ConnectionString(x => x.Db.DataConnString),
+                        "CallbackData", c.Resolve<ILogFactory>())))
+                .As<ICallbackDataRepository>()
+                .SingleInstance();
 
             builder.Populate(_services);
         }
