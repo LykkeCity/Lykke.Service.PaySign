@@ -6,11 +6,10 @@ namespace Lykke.Service.PaySign.Client
 {
     public static class AutofacExtension
     {
-        public static void RegisterPaySignClient(this ContainerBuilder builder, string serviceUrl, ILog log)
+        public static void RegisterPaySignClient(this ContainerBuilder builder, string serviceUrl)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
             if (serviceUrl == null) throw new ArgumentNullException(nameof(serviceUrl));
-            if (log == null) throw new ArgumentNullException(nameof(log));
             if (string.IsNullOrWhiteSpace(serviceUrl))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(serviceUrl));
 
@@ -20,9 +19,9 @@ namespace Lykke.Service.PaySign.Client
                 .SingleInstance();
         }
 
-        public static void RegisterPaySignClient(this ContainerBuilder builder, PaySignServiceClientSettings settings, ILog log)
+        public static void RegisterPaySignClient(this ContainerBuilder builder, PaySignServiceClientSettings settings)
         {
-            builder.RegisterPaySignClient(settings?.ServiceUrl, log);
+            builder.RegisterPaySignClient(settings?.ServiceUrl);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Common.Log;
 using Lykke.Common.Api.Contract.Responses;
+using Lykke.Common.Log;
 using Lykke.Service.PaySign.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -18,10 +19,10 @@ namespace Lykke.Service.PaySign.Controllers
 
         public CallbackStubController(
             ICallbackStubService callbackStubService,
-            ILog log)
+            ILogFactory logFactory)
         {
             _callbackStubService = callbackStubService ?? throw new ArgumentNullException(nameof(callbackStubService));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
+            _log = logFactory?.CreateLog(this) ?? throw new ArgumentNullException(nameof(logFactory));
         }
 
         [HttpPost]
@@ -42,7 +43,7 @@ namespace Lykke.Service.PaySign.Controllers
             }
             catch (Exception e)
             {
-                await _log.WriteErrorAsync(nameof(CallbackStubController), nameof(RegisterCall), e);
+                _log.Error(e);
             }
 
             return StatusCode((int) HttpStatusCode.InternalServerError);
@@ -62,7 +63,7 @@ namespace Lykke.Service.PaySign.Controllers
             }
             catch (Exception e)
             {
-                await _log.WriteErrorAsync(nameof(CallbackStubController), nameof(GetLatestCalls), e);
+                _log.Error(e);
             }
 
             return StatusCode((int) HttpStatusCode.InternalServerError);

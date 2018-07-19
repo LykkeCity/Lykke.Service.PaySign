@@ -1,5 +1,6 @@
 ﻿using System;
 using Common.Log;
+using Lykke.Common.Log;
 
 namespace Lykke.Service.PaySign.Client
 {
@@ -7,9 +8,9 @@ namespace Lykke.Service.PaySign.Client
     {
         private readonly ILog _log;
 
-        public PaySignClient(string serviceUrl, ILog log)
+        public PaySignClient(string serviceUrl, ILogFactory logFactory)
         {
-            _log = log;
+            _log = logFactory.CreateLog(this);
         }
 
         public void Dispose()
