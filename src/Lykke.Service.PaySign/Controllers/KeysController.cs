@@ -88,6 +88,10 @@ namespace Lykke.Service.PaySign.Controllers
 
                 return BadRequest(ErrorResponse.Create($"Couldn't add {keyName}"));
             }
+            catch (FormatException ex)
+            {
+                return BadRequest(ErrorResponse.Create($"Private key file has an invalid format: {ex.Message}"));
+            }
             catch (Exception e)
             {
                 _log.Error(e);
