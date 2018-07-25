@@ -1,0 +1,18 @@
+{
+	"PaySignService": {
+		"Db": {
+			"LogsConnString": "${LogsConnString}:[AzureTableStorage]",
+			"DataConnString": "${PaySignService-DataConnString}:[AzureTableStorage]"
+		}
+	},
+	"SlackNotifications": {
+		"AzureQueue": {
+			"ConnectionString": "${SlackNotificationsConnString}:[AzureTableStorage]",
+			"QueueName": "slack-notifications"
+		},
+		"ThrottlingLimitSeconds": ${SlackNotificationsThrottlingLimit}
+	},
+	"MonitoringServiceClient": {
+		"MonitoringServiceUrl": "${MonitoringServiceUrl}"
+	}
+}
