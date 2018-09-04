@@ -1,0 +1,21 @@
+PaySignService: 
+    Db:
+        LogsConnString:
+            settings-key: PaySignService-LogsConnString
+            types: [ AzureTableStorage ]
+        DataConnString: 
+            settings-key: PaySignService-DataConnString
+            types: [ AzureTableStorage ]
+
+MonitoringServiceClient:
+  MonitoringServiceUrl:
+    settings-key: MonitoringServiceUrl
+
+SlackNotifications:
+  AzureQueue:
+    ConnectionString:
+      settings-key: SlackNotificationsConnString
+      types: [ AzureTableStorage ]
+    QueueName:
+      settings-key: SlackQueueName
+      types: [ AzureTableStorage ]
