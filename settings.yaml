@@ -1,10 +1,10 @@
 PaySignService: 
     Db:
         LogsConnString:
-            settings-key: PaySignService-LogsConnString
+            settings-key: LykkePayLogsConnString
             types: [ AzureTableStorage ]
         DataConnString: 
-            settings-key: PaySignService-DataConnString
+            settings-key: LykkePayDataConnString
             types: [ AzureTableStorage ]
 
 MonitoringServiceClient:
